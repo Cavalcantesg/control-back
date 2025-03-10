@@ -11,38 +11,89 @@ class GastoScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Adicionar Gasto'),
       ),
-      body: Column(
-        children: [
-          // Botões para "Gastos" e "Conta"
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Navegar para a tela de adicionar gasto
+                // Botão Gastos
+                GestureDetector(
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AdicionarGastoScreen()),
                     );
                   },
-                  child: const Text('Gastos'),
+                  child: Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6200EE),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: const Offset(2, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.shopping_cart, size: 50, color: Colors.white),
+                        SizedBox(height: 10),
+                        Text(
+                          'Gastos',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navegar para a tela de adicionar conta
+
+                // Botão Conta
+                GestureDetector(
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AdicionaContaScreen()),
                     );
                   },
-                  child: const Text('Conta'),
+                  child: Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6200EE),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 5,
+                          offset: const Offset(2, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.account_balance_wallet, size: 50, color: Colors.white),
+                        SizedBox(height: 10),
+                        Text(
+                          'Conta',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

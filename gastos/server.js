@@ -505,32 +505,42 @@ const getMesAnoAtual = () => {
     };
   };
 
-app.get('/totais/:user_id', async (req, res) => {
+  app.get('/totais/:user_id', async (req, res) => {
     const { user_id } = req.params;
     const { mes, ano } = getMesAnoAtual(); // Usa a função getMesAnoAtual
   
     try {
-      // Consulta total de contas do mês atual
+      // Consulta total de contas do mês atual e contas recorrentes
       const [contas] = await pool.query(
         `SELECT SUM(valor) AS total_contas 
          FROM conta 
-         WHERE user_id = ? AND MONTH(data_conta) = ? AND YEAR(data_conta) = ?`,
+         WHERE user_id = ? 
+         AND (MONTH(data_conta) = ? AND YEAR(data_conta) = ? OR eh_mensal = 1)`,
         [user_id, mes, ano]
       );
   
-      // Consulta total de gastos do mês atual
+      // Consulta total de gastos do mês atual, considerando parcelas
       const [gastos] = await pool.query(
         `SELECT SUM(valor) AS total_gastos 
          FROM gasto 
-         WHERE user_id = ? AND MONTH(data) = ? AND YEAR(data) = ?`,
-        [user_id, mes, ano]
+         WHERE user_id = ? 
+         AND (
+           (MONTH(data) = ? AND YEAR(data) = ?)  -- Verifica se é o mês de compra
+           OR (
+             quantidade_parcelas > 1  -- Se for parcelado
+             AND MONTH(DATE_ADD(data, INTERVAL (quantidade_parcelas - 1) MONTH)) >= ?  -- Verifica se a parcela está dentro do mês atual
+             AND YEAR(DATE_ADD(data, INTERVAL (quantidade_parcelas - 1) MONTH)) = ?
+           )
+         )`,
+        [user_id, mes, ano, mes, ano]
       );
   
-      // Consulta total de ganhos do mês atual
+      // Consulta total de ganhos do mês atual e ganhos recorrentes
       const [ganhos] = await pool.query(
         `SELECT SUM(valor) AS total_ganhos 
          FROM ganho 
-         WHERE user_id = ? AND MONTH(data_recebimento) = ? AND YEAR(data_recebimento) = ?`,
+         WHERE user_id = ? 
+         AND (MONTH(data_recebimento) = ? AND YEAR(data_recebimento) = ? OR eh_recorrente = 1)`,
         [user_id, mes, ano]
       );
   
@@ -544,7 +554,8 @@ app.get('/totais/:user_id', async (req, res) => {
       console.error('Erro ao calcular totais:', err);
       res.status(500).json({ error: 'Erro ao calcular totais' });
     }
-  });
+});
+
 
   app.get('/ultimos-gastos/:user_id', async (req, res) => {
     const { user_id } = req.params;

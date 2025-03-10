@@ -3,7 +3,8 @@ import 'package:flutter/services.dart'; // Importação necessária para TextInp
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'home.dart'; // Importando a tela de Home
-import 'globals.dart' as globals; // Importando a variável userId do globals.dart
+import 'globals.dart'
+    as globals; // Importando a variável userId do globals.dart
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Importação para máscara de data
 
 class AdicionaGanhoScreen extends StatefulWidget {
@@ -23,8 +24,10 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
   // Controllers para os campos de texto
   final TextEditingController _descricaoController = TextEditingController();
   final TextEditingController _valorController = TextEditingController();
-  final TextEditingController _dataRecebimentoController = TextEditingController();
-  final TextEditingController _diaVencimentoController = TextEditingController();
+  final TextEditingController _dataRecebimentoController =
+      TextEditingController();
+  final TextEditingController _diaVencimentoController =
+      TextEditingController();
 
   // Máscara personalizada para o campo de valor
   final valorMask = TextInputFormatter.withFunction((oldValue, newValue) {
@@ -67,15 +70,19 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
       String dataFormatada = _converterDataParaFormatoBanco(_dataRecebimento);
 
       final response = await http.post(
-        Uri.parse('http://192.168.15.114:3000/ganhos'), // Endpoint para adicionar ganhos
+        Uri.parse(
+            'http://192.168.15.114:3000/ganhos'), // Endpoint para adicionar ganhos
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_id': globals.userId, // Usando a variável userId do globals.dart
           'descricao': _descricao,
           'valor': valorFormatado, // Envia o valor formatado como string
-          'data_recebimento': dataFormatada, // Envia a data no formato aaaa-MM-dd
+          'data_recebimento':
+              dataFormatada, // Envia a data no formato aaaa-MM-dd
           'eh_recorrente': _ehRecorrente, // Envia se é um ganho recorrente
-          'dia_vencimento': _ehRecorrente ? _diaVencimento : null, // Envia o dia do vencimento apenas se for recorrente
+          'dia_vencimento': _ehRecorrente
+              ? _diaVencimento
+              : null, // Envia o dia do vencimento apenas se for recorrente
         }),
       );
 
@@ -87,11 +94,13 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
         // Navegar para a tela HomeScreen
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()), // Substitua HomeScreen pela sua tela de destino
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen()), // Substitua HomeScreen pela sua tela de destino
         );
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Erro ao adicionar ganho!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Erro ao adicionar ganho!')));
       }
     }
   }
@@ -138,7 +147,11 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
               // Campo Descrição
               TextFormField(
                 controller: _descricaoController,
-                decoration: const InputDecoration(labelText: 'Descrição'),
+                decoration: InputDecoration(
+                  labelText: 'Descrição',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira uma descrição';
@@ -151,26 +164,34 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
                   });
                 },
               ),
+              const SizedBox(height: 10),
 
-              // Campo Valor
+// Campo Valor
               TextFormField(
                 controller: _valorController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Valor',
                   prefixText: 'R\$ ',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
                 ),
                 inputFormatters: [valorMask], // Aplica a máscara de valor
                 onChanged: (value) {
                   // Não é mais necessário atualizar _valor
                 },
               ),
+              const SizedBox(height: 10),
 
-              // Campo Data de Recebimento
+// Campo Data de Recebimento
               TextFormField(
                 controller: _dataRecebimentoController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Data de Recebimento (dd/MM/aaaa)'),
+                decoration: InputDecoration(
+                  labelText: 'Data de Recebimento (dd/MM/aaaa)',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
                 inputFormatters: [dataMask], // Aplica a máscara de data
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -190,15 +211,20 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
                   });
                 },
               ),
+              const SizedBox(height: 10),
 
               // Botão para preencher a data atual
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: ElevatedButton(
-                  onPressed: _preencherDataAtual,
-                  child: const Text('Usar data atual'),
+              ElevatedButton(
+                onPressed: _preencherDataAtual,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 ),
+                child: const Text('Usar data atual',
+                    style: TextStyle(color: Colors.black)),
               ),
+              const SizedBox(height: 10),
 
               // Campo "É um ganho recorrente?"
               SwitchListTile(
@@ -216,7 +242,11 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
                 TextFormField(
                   controller: _diaVencimentoController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Dia do ganho (1 a 31)'),
+                  decoration: InputDecoration(
+                    labelText: 'Dia do ganho (1 a 31)',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o dia do ganho';
@@ -248,7 +278,12 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: ElevatedButton(
                   onPressed: _enviarFormulario,
-                  child: const Text('Adicionar Ganho'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF6200EE),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  child: const Text('Adicionar ganho',
+                      style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
@@ -257,4 +292,4 @@ class _AdicionaGanhoScreenState extends State<AdicionaGanhoScreen> {
       ),
     );
   }
-}   
+}

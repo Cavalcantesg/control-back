@@ -48,10 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
         if (data.containsKey('id')) {
           userId = data['id'].toString(); // Armazena o ID na variável global
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('ID do usuário: $userId')),
-          );
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -104,6 +100,12 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: _login,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF6200EE), // Cor de fundo roxa
+                foregroundColor: Colors.white, // Cor do texto (branco)
+                minimumSize:
+                    Size(double.infinity, 50), // Tamanho mínimo do botão
+              ),
               child: const Text('Entrar'),
             ),
             const SizedBox(height: 16.0),
@@ -114,8 +116,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(builder: (context) => CadastroScreen()),
                 );
               },
-              child: const Text('Cadastre-se'),
-            ),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 32.0), // Aumenta o tamanho do botão
+              ),
+              child: const Text(
+                'Cadastre-se',
+                style: TextStyle(
+                  fontSize: 15, // Aumenta o tamanho da fonte
+                ),
+              ),
+            )
           ],
         ),
       ),

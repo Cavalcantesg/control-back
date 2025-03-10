@@ -181,10 +181,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       PieChartSectionData(
         value: _totalContas,
-        color: Colors.blue,
+        color: const Color.fromARGB(255, 211, 103, 1),
         title: 'Contas\n${_totalContas.toStringAsFixed(2)}',
         radius: 50,
-        titlePositionPercentageOffset: 0.8,
+        titlePositionPercentageOffset: 1.2,
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.red,
         title: 'Gastos\n${_totalGastos.toStringAsFixed(2)}',
         radius: 50,
-        titlePositionPercentageOffset: 0.8,
+        titlePositionPercentageOffset: 1.2,
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.green,
         title: 'Ganhos\n${_totalGanhos.toStringAsFixed(2)}',
         radius: 50,
-        titlePositionPercentageOffset: 0.8,
+        titlePositionPercentageOffset: 1.2,
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,

@@ -5,7 +5,6 @@ import 'globals.dart' as globals;
 import 'editar_gasto.dart'; // Supondo que você tenha uma tela para editar o gasto
 import 'package:intl/intl.dart';
 
-
 class DetalheGastoScreen extends StatefulWidget {
   const DetalheGastoScreen({super.key});
 
@@ -177,6 +176,19 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                         itemCount: _gastos.length,
                         itemBuilder: (context, index) {
                           final gasto = _gastos[index];
+                          double valorTotal =
+                              double.parse(gasto['valor'].replaceAll(',', '.'));
+                          double valorParcela =
+                              valorTotal; // Inicialmente, o valor da parcela é igual ao valor total
+
+                          // Verifica se o gasto é parcelado e se os dados de parcelas estão disponíveis
+                          if (gasto['total_parcelas'] != null) {
+                            int totalParcelas = gasto['total_parcelas'];
+                            valorParcela = valorTotal /
+                                totalParcelas; // Calcula o valor por parcela
+                            print(valorParcela);
+                          }
+
                           return Card(
                             margin: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 16.0),
@@ -196,12 +208,14 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            "${gasto['categoria']} - R\$ ${gasto['valor']}"),
+                                            "${gasto['categoria']} - Valor total: R\$ ${valorTotal.toStringAsFixed(2)}"),
+                                        // Exibe a parcela apenas se o gasto for parcelado
                                         if (gasto['parcela_atual'] != null)
                                           Text(
-                                              "Parcela: ${gasto['parcela_atual']}"),
-                                          Text("Data: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(gasto['data']))}"),
-
+                                            "Parcela: ${gasto['parcela_atual']}",
+                                          ),
+                                        Text(
+                                            "Data: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(gasto['data']).toLocal())}")
                                       ],
                                     ),
                                   ),
@@ -211,7 +225,6 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                       // Botão Editar
                                       OutlinedButton(
                                         onPressed: () {
-                                          // Editar: Navega para a tela de edição
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -221,7 +234,6 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                             ),
                                           ).then((updated) {
                                             if (updated == true) {
-                                              // A atualização foi bem-sucedida, então vamos recarregar os dados
                                               fetchGastos();
                                             }
                                           });
@@ -229,11 +241,11 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: Colors.white,
                                           side: BorderSide(
-                                            color: const Color.fromARGB(255, 29,
-                                                138, 226), // Cor da borda
+                                            color: const Color.fromARGB(
+                                                255, 29, 138, 226),
                                           ),
-                                          backgroundColor: Color.fromARGB(255,
-                                              29, 138, 226), // Cor de fundo
+                                          backgroundColor:
+                                              Color.fromARGB(255, 29, 138, 226),
                                         ),
                                         child: const Text('Editar'),
                                       ),
@@ -242,7 +254,6 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                       // Botão Excluir
                                       OutlinedButton(
                                         onPressed: () {
-                                          // Excluir: Exclui o gasto
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
@@ -278,10 +289,11 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: Colors.white,
                                           side: BorderSide(
-                                              color: const Color.fromARGB(255,
-                                                  212, 8, 8)), // Cor da borda
-                                          backgroundColor: Color.fromARGB(
-                                              255, 212, 8, 8), // Cor de fundo
+                                            color: const Color.fromARGB(
+                                                255, 212, 8, 8),
+                                          ),
+                                          backgroundColor:
+                                              Color.fromARGB(255, 212, 8, 8),
                                         ),
                                         child: const Text('Excluir'),
                                       ),
@@ -293,7 +305,7 @@ class _DetalheGastoScreenState extends State<DetalheGastoScreen> {
                           );
                         },
                       ),
-          ),
+          )
         ],
       ),
     );
